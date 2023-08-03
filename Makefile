@@ -12,6 +12,3 @@ build-system:
 
 editable: build-system
 	@pip install --no-build-isolation -ve .
-
-editable-all: build-system
-	@pip install --no-build-isolation -ve ".[all]"

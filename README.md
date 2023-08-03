@@ -30,7 +30,6 @@
 First, make sure the [MinkowskiEngine](https://github.com/NVIDIA/MinkowskiEngine) is installed on your system, see [here](https://github.com/NVIDIA/MinkowskiEngine#installation) for more details.
 
 Next, clone our repository
-
 ```bash
 git clone git@github.com:PRBonn/MapMOS && cd MapMOS
 ```
@@ -40,7 +39,11 @@ and install with
 make install
 ```
 
-**or** in editable mode:
+**or**
+```bash
+make install-all
+```
+if you want to install the project with all optional dependencies (needed for the visualizer). In case you want to edit the Python code, install in editable mode:
 ```bash
 make editable
 ```
