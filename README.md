@@ -5,13 +5,24 @@
     <a href="https://www.ipb.uni-bonn.de/wp-content/papercite-data/pdf/mersch2023ral.pdf"><img src="https://img.shields.io/badge/Paper-pdf-<COLOR>.svg?style=flat-square" /></a>
     <a href="https://lbesson.mit-license.org/"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
 
-</div>
+<p>
+  <img src="https://github.com/PRBonn/MapMOS/assets/38326482/cd594591-8c2c-41f0-8412-cd5d1d2fd7d4" width="450"/>
+  <a href="https://github.com/PRBonn/MapMOS/assets/38326482/04c7e5a2-dd44-431a-95b0-c42d5605078a"><img alt="MapMOS" src="https://github.com/PRBonn/MapMOS/assets/38326482/a4238431-bd2d-4b2c-991b-7ff5e9378a8e" width="450"></a>
+</p>
 
-*Our approach identifies moving objects (red) in the current scan (blue) and the local map (black) of the environment. We maintain a volumetric belief map representing the dynamic environment and fuse new predictions in a probabilistic fashion. This allows us to reject false positive predictions that contradict our volumetric belief.*
+<p>
+  <i>
+  Our approach identifies moving objects in the current scan (blue points) and the local map (black points) of the environment and maintains a volumetric belief map representing the dynamic environment. <b>Click on the right</b> to see qualitative results with true positives (green), false positives (red), and false negatives (blue).
+  </i>
+</p>
+
+</div>
 
 
 ## Installation
-First, make sure the [MinkowskiEngine](https://github.com/NVIDIA/MinkowskiEngine) is installed on your system, see [here](https://github.com/NVIDIA/MinkowskiEngine#installation) for more details. Next, clone our repository
+First, make sure the [MinkowskiEngine](https://github.com/NVIDIA/MinkowskiEngine) is installed on your system, see [here](https://github.com/NVIDIA/MinkowskiEngine#installation) for more details.
+
+Next, clone our repository
 
 ```bash
 git clone git@github.com:PRBonn/MapMOS && cd MapMOS
