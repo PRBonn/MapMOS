@@ -51,7 +51,19 @@ Just type
 ```bash
 mapmos_pipeline --help
 ```
-to see how to run MapMOS. Check the [Download](#downloads) section for a pre-trained model. Like [KISS-ICP](https://github.com/PRBonn/kiss-icp), our pipeline runs on a variety of point cloud data formats like `bin`, `pcd`, `ply`, `xyz`, `rosbags`, and more. Check `--help` for examples.
+to see how to run MapMOS. 
+<details>
+<summary>This is what you should see</summary>
+
+![Screenshot from 2023-08-03 13-07-14](https://github.com/PRBonn/MapMOS/assets/38326482/c769afa6-709d-4648-b42d-11092d5b92ac)
+
+</details>
+
+Check the [Download](#downloads) section for a pre-trained model. Like [KISS-ICP](https://github.com/PRBonn/kiss-icp), our pipeline runs on a variety of point cloud data formats like `bin`, `pcd`, `ply`, `xyz`, `rosbags`, and more. To visualize these, just type 
+
+```bash
+mapmos_pipeline --visualize /path/to/weights.ckpt /path/to/data
+```
 
 <details>
 <summary>Want to evaluate with ground truth labels?</summary>
