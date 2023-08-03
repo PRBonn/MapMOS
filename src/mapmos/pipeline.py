@@ -37,7 +37,7 @@ from mapmos.mapping import VoxelHashMap
 from mapmos.metrics import get_confusion_matrix
 from mapmos.utils.visualizer import MapMOSVisualizer, StubVisualizer
 from mapmos.utils.pipeline_results import MOSPipelineResults
-from mapmos.utils.save import save_to_ply, save_to_kitti
+from mapmos.utils.save import PlyWriter, KITTIWriter, StubWriter
 from mapmos.config import load_config
 
 
@@ -99,8 +99,8 @@ class MapMOSPipeline(OdometryPipeline):
         self.visualize = visualize
         self.visualizer = MapMOSVisualizer() if visualize else StubVisualizer()
 
-        self.save_ply = save_ply
-        self.save_kitti = save_kitti
+        self.ply_writer = PlyWriter() if save_ply else StubWriter()
+        self.kitti_writer = KITTIWriter() if save_kitti else StubWriter()
 
     # Public interface  ------
     def run(self):
@@ -203,19 +203,16 @@ class MapMOSPipeline(OdometryPipeline):
             torch.tensor(belief_labels_query, dtype=torch.int32),
             torch.tensor(query_labels, dtype=torch.int32),
         )
-        if self.save_ply:
-            save_to_ply(
-                query_points,
-                belief_labels_query,
-                query_labels,
-                filename=f"{self.results_dir}/ply/{query_index:06}.ply",
-            )
-
-        if self.save_kitti:
-            save_to_kitti(
-                belief_labels_query,
-                filename=f"{self.results_dir}/bin/sequences/{self.dataset_sequence}/predictions/{query_index:06}.label",
-            )
+        self.ply_writer.write(
+            query_points,
+            belief_labels_query,
+            query_labels,
+            filename=f"{self.results_dir}/ply/{query_index:06}.ply",
+        )
+        self.kitti_writer.write(
+            belief_labels_query,
+            filename=f"{self.results_dir}/bin/sequences/{self.dataset_sequence}/predictions/{query_index:06}.label",
+        )
 
     def _next(self, idx):
         dataframe = self._dataset[idx]
