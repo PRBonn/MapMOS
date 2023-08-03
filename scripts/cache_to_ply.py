@@ -23,13 +23,13 @@
 
 import os
 import typer
+import importlib
 
 import numpy as np
 import torch
 from typing import List, Optional
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-import open3d as o3d
 from pathlib import Path
 
 from mapmos.datasets.mapmos_dataset import MapMOSDataset, collate_fn
@@ -68,6 +68,12 @@ def cache_to_ply(
         help="[Optional] Path to the configuration file",
     ),
 ):
+    try:
+        o3d = importlib.import_module("open3d")
+    except ModuleNotFoundError as err:
+        print(f'open3d is not installed on your system, run "pip install open3d"')
+        exit(1)
+
     for seq in sequence:
         # Run
         cfg = load_config(config)
