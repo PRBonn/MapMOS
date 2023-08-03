@@ -6,15 +6,22 @@
     <a href="https://lbesson.mit-license.org/"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
 
 <p>
-  <img src="https://github.com/PRBonn/MapMOS/assets/38326482/cd594591-8c2c-41f0-8412-cd5d1d2fd7d4" width="400"/>
-  <a href="https://github.com/PRBonn/MapMOS/assets/38326482/04c7e5a2-dd44-431a-95b0-c42d5605078a"><img alt="MapMOS" src="https://github.com/PRBonn/MapMOS/assets/38326482/a4238431-bd2d-4b2c-991b-7ff5e9378a8e" width="400"></a>
+  <img src="https://github.com/PRBonn/MapMOS/assets/38326482/cd594591-8c2c-41f0-8412-cd5d1d2fd7d4" width="500"/>
 </p>
 
 <p>
-  <i>
-  Our approach identifies moving objects in the current scan (blue points) and the local map (black points) of the environment and maintains a volumetric belief map representing the dynamic environment. <b>Click on the right</b> to see qualitative results with true positives (green), false positives (red), and false negatives (blue).
-  </i>
+  <i>Our approach identifies moving objects in the current scan (blue points) and the local map (black points) of the environment and maintains a volumetric belief map representing the dynamic environment.</i>
 </p>
+
+<details>
+<summary><b>Click here for qualitative results!</b></summary>
+  
+[![MapMOS](https://github.com/PRBonn/MapMOS/assets/38326482/a4238431-bd2d-4b2c-991b-7ff5e9378a8e)](https://github.com/PRBonn/MapMOS/assets/38326482/04c7e5a2-dd44-431a-95b0-c42d5605078a)
+
+ <i>Our predictions for the KITTI Tracking sequence 19 with true positives (green), false positives (red), and false negatives (blue).</i>
+
+</details>
+
 
 </div>
 
