@@ -7,8 +7,6 @@ install-all:
 uninstall:
 	@pip -v uninstall mapmos
 
-build-system:
+editable:
 	@pip install scikit-build-core pyproject_metadata pathspec pybind11 ninja cmake
-
-editable: build-system
 	@pip install --no-build-isolation -ve .
