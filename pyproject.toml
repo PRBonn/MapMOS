@@ -1,5 +1,6 @@
 [project]
 name = "mapmos"
+requires-python = "<3.11" # TODO: Remove when open3d is available for Python 3.11
 version = "0.0.1"
 description = "Building Volumetric Beliefs for Dynamic Environments Exploiting Map-Based Moving Object Segmentation"
 readme = "README.md"
