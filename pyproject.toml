@@ -1,0 +1,56 @@
+[project]
+name = "mapmos"
+version = "0.0.1"
+description = "Building Volumetric Beliefs for Dynamic Environments Exploiting Map-Based Moving Object Segmentation"
+readme = "README.md"
+authors = [
+    { name = "Benedikt Mersch", email = "benedikt.mersch@gmail.com" },
+]
+license_files = "LICENSE"
+dependencies = [
+    "kiss-icp>=0.2.10",
+    "diskcache>=5.3.0",
+    "open3d>=0.13",
+    "pytorch_lightning>=1.6.4",
+]
+
+[project.optional-dependencies]
+all = [
+    "PyYAML",
+    "ouster-sdk>=0.7.1",
+    "pyntcloud",
+    "trimesh",
+]
+
+[project.scripts]
+mapmos_pipeline = "mapmos.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/PRBonn/MapMOS"
+
+[build-system]
+requires = [
+    "scikit_build_core>=0.3.3",
+    "pybind11",
+]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+build-dir = "build"
+cmake.verbose = false
+cmake.minimum-version = "3.16"
+cmake.source-dir = "src/mapmos/pybind/"
+editable.mode = "redirect"
+editable.rebuild = true
+editable.verbose = true
+sdist.exclude = ["pybind/"]
+wheel.install-dir = "mapmos/pybind/"
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.format]
+max-line-length = "100"

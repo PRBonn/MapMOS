@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+preferred-citation:
+  title: "Building Volumetric Beliefs for Dynamic Environments Exploiting Map-Based Moving Object Segmentation"
+  doi: "10.1109/LRA.2023.3292583"
+  year: "2023"
+  type: article
+  journal: "IEEE Robotics and Automation Letters (RA-L)"
+  url: https://www.ipb.uni-bonn.de/wp-content/papercite-data/pdf/mersch2023ral.pdf
+  codeurl: https://github.com/PRBonn/MapMOS
+  authors:
+    - family-names: Mersch
+      given-names: Benedikt
+    - family-names: Guadagnino
+      given-names: Tiziano
+    - family-names: Chen
+      given-names: Xieyuanli
+    - family-names: Vizzo
+      given-names: Ignacio
+    - family-names: Behley
+      given-names: Jens
+    - family-names: Stachniss
+      given-names: Cyrill
