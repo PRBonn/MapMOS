@@ -6,8 +6,8 @@
     <a href="https://lbesson.mit-license.org/"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
 
 <p>
-  <img src="https://github.com/PRBonn/MapMOS/assets/38326482/cd594591-8c2c-41f0-8412-cd5d1d2fd7d4" width="450"/>
-  <a href="https://github.com/PRBonn/MapMOS/assets/38326482/04c7e5a2-dd44-431a-95b0-c42d5605078a"><img alt="MapMOS" src="https://github.com/PRBonn/MapMOS/assets/38326482/a4238431-bd2d-4b2c-991b-7ff5e9378a8e" width="450"></a>
+  <img src="https://github.com/PRBonn/MapMOS/assets/38326482/cd594591-8c2c-41f0-8412-cd5d1d2fd7d4" width="400"/>
+  <a href="https://github.com/PRBonn/MapMOS/assets/38326482/04c7e5a2-dd44-431a-95b0-c42d5605078a"><img alt="MapMOS" src="https://github.com/PRBonn/MapMOS/assets/38326482/a4238431-bd2d-4b2c-991b-7ff5e9378a8e" width="400"></a>
 </p>
 
 <p>
