@@ -30,7 +30,6 @@ from tqdm.auto import trange
 from mapmos.mapping import VoxelHashMap
 from mapmos.metrics import get_confusion_matrix
 from mapmos.pipeline import MapMOSPipeline
-from mapmos.utils.save import save_to_ply, save_to_kitti
 
 
 class PaperPipeline(MapMOSPipeline):
