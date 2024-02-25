@@ -73,11 +73,13 @@ class PaperPipeline(MapMOSPipeline):
             map_points, map_indices = self.odometry.get_map_points()
             scan_points = self.odometry.register_points(local_scan, timestamps, scan_index)
 
-            scan_mask = self._preprocess(scan_points)
+            min_range_mos = self.config.mos.min_range_mos
+            max_range_mos = self.config.mos.max_range_mos
+            scan_mask = self._preprocess(scan_points, min_range_mos, max_range_mos)
             scan_points = torch.tensor(scan_points[scan_mask], dtype=torch.float32, device="cuda")
             gt_labels = gt_labels[scan_mask]
 
-            map_mask = self._preprocess(map_points)
+            map_mask = self._preprocess(map_points, min_range_mos, max_range_mos)
             map_points = torch.tensor(map_points[map_mask], dtype=torch.float32, device="cuda")
             map_indices = torch.tensor(map_indices[map_mask], dtype=torch.float32, device="cuda")
 
@@ -123,12 +125,20 @@ class PaperPipeline(MapMOSPipeline):
                 torch.tensor(gt_labels, dtype=torch.int32),
             )
 
-            # Probabilistic volumetric fusion with scan and moving map predictions
-            map_mask = pred_logits_map > 0
-            points_stacked = np.vstack([scan_points, map_points[map_mask]])
+            # Probabilistic Volumetric Fusion of predictions within the belief range
+            map_mask_belief = pred_logits_map > 0
+            map_mask_belief = np.logical_and(
+                map_mask_belief, self._preprocess(map_points, 0.0, self.config.mos.max_range_belief)
+            )
+            scan_mask_belief = self._preprocess(scan_points, 0.0, self.config.mos.max_range_belief)
+            points_stacked = np.vstack([scan_points[scan_mask_belief], map_points[map_mask_belief]])
             logits_stacked = np.vstack(
-                [pred_logits_scan.reshape(-1, 1), pred_logits_map[map_mask].reshape(-1, 1)]
+                [
+                    pred_logits_scan[scan_mask_belief].reshape(-1, 1),
+                    pred_logits_map[map_mask_belief].reshape(-1, 1),
+                ]
             ).reshape(-1)
+
             start_time = time.perf_counter_ns()
             self.belief.update_belief(points_stacked, logits_stacked)
             belief_with_map = self.belief.get_belief(scan_points)
@@ -144,9 +154,7 @@ class PaperPipeline(MapMOSPipeline):
                 torch.tensor(gt_labels, dtype=torch.int32),
             )
 
-            belief_scan = self.belief.get_belief(scan_points)
-            self.times_belief.append(time.perf_counter_ns() - start_time)
-            belief_labels_scan = self.model.to_label(belief_scan)
+            belief_labels_scan = belief_labels_with_map
             if self.visualize:
                 belief_map = self.belief.get_belief(map_points)
                 belief_labels_map = self.model.to_label(belief_map)
