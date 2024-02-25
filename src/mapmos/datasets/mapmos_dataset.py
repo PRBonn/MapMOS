@@ -216,8 +216,8 @@ class MapMOSDataset(Dataset):
         scan_labels = scan_labels[valid_mask]
 
         if self.sequence != sequence:
-            data_config = DataConfig().parse_obj(data_config_dict)
-            odometry_config = OdometryConfig().parse_obj(odometry_config_dict)
+            data_config = DataConfig().model_validate(data_config_dict)
+            odometry_config = OdometryConfig().model_validate(odometry_config_dict)
 
             self.odometry = Odometry(data_config, odometry_config)
             self.gt_map = VoxelHashMap(odometry_config.voxel_size, data_config.max_range)
