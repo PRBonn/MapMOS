@@ -2,7 +2,6 @@
 
 data:
   deskew: False
-  preprocess: True
   max_range: 100.0
   min_range: 3.0
 

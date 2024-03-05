@@ -33,7 +33,6 @@ from mapmos.mapping import VoxelHashMap
 def parse_config(config_data: DataConfig, config_odometry: OdometryConfig):
     kiss_config = KISSConfig()
     kiss_config.data.deskew = config_data.deskew
-    kiss_config.data.preprocess = config_data.preprocess
     kiss_config.data.max_range = config_data.max_range
     kiss_config.data.min_range = config_data.min_range
     kiss_config.mapping.voxel_size = config_odometry.voxel_size
