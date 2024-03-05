@@ -29,7 +29,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from mapmos.config.config import (
     DataConfig,
@@ -40,6 +40,7 @@ from mapmos.config.config import (
 
 
 class MapMOSConfig(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix="mapmos_")
     out_dir: str = "results"
     data: DataConfig = DataConfig()
     odometry: OdometryConfig = OdometryConfig()
