@@ -51,8 +51,6 @@ protected:
 };
 
 struct VoxelHashMap {
-    using Vector3dVector = std::vector<Eigen::Vector3d>;
-    using Vector3dVectorTuple = std::tuple<Vector3dVector, Vector3dVector>;
     using Voxel = Eigen::Vector3i;
     struct VoxelBlock {
         // buffer of points with a max limit of n_points
@@ -60,7 +58,6 @@ struct VoxelHashMap {
         std::vector<int> timestamps;
         Belief belief;
         int num_points_;
-
         inline void AddPoint(const Eigen::Vector3d &point, int timestamp) {
             if (points.size() < static_cast<size_t>(num_points_)) {
                 points.push_back(point);
@@ -80,10 +77,13 @@ struct VoxelHashMap {
           max_distance_(max_distance),
           max_points_per_voxel_(max_points_per_voxel) {}
 
-    Vector3dVectorTuple GetCorrespondences(const Vector3dVector &points,
-                                           double max_correspondance_distance) const;
     inline void Clear() { map_.clear(); }
     inline bool Empty() const { return map_.empty(); }
+    inline Voxel PointToVoxel(const Eigen::Vector3d &point) const {
+        return Voxel(static_cast<int>(point.x() / voxel_size_),
+                     static_cast<int>(point.y() / voxel_size_),
+                     static_cast<int>(point.z() / voxel_size_));
+    }
     void Update(const std::vector<Eigen::Vector3d> &points,
                 const Eigen::Vector3d &origin,
                 const int timestamp);
@@ -91,11 +91,13 @@ struct VoxelHashMap {
                 const Sophus::SE3d &pose,
                 const int timestamp);
     void AddPoints(const std::vector<Eigen::Vector3d> &points, const int timestamp);
-    std::vector<double> GetBelief(const Vector3dVector &points) const;
-    void UpdateBelief(const Vector3dVector &points, const std::vector<double> &updates);
-    void RemoveFarAwayPoints(const Eigen::Vector3d &origin);
+    std::vector<double> GetBelief(const std::vector<Eigen::Vector3d> &points) const;
+    void UpdateBelief(const std::vector<Eigen::Vector3d> &points,
+                      const std::vector<double> &updates);
+    void RemovePointsFarFromLocation(const Eigen::Vector3d &origin);
     std::vector<Eigen::Vector3d> Pointcloud() const;
     std::tuple<std::vector<Eigen::Vector3d>, std::vector<int>> PointcloudWithTimestamps() const;
+    std::vector<Eigen::Vector3d> GetPoints(const std::vector<Voxel> &query_voxels) const;
 
     double voxel_size_;
     double max_distance_;

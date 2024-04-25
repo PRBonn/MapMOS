@@ -25,8 +25,8 @@ from mapmos.config import DataConfig, OdometryConfig
 from typing import Type
 
 from kiss_icp.config import KISSConfig
-from kiss_icp.kiss_icp import KissICP
-from mapmos.registration import register_frame
+from kiss_icp.kiss_icp import KissICP, get_registration
+from mapmos.registration import get_registration
 from mapmos.mapping import VoxelHashMap
 
 
@@ -56,6 +56,7 @@ class Odometry(KissICP):
             max_distance=self.config.data.max_range,
             max_points_per_voxel=self.config.mapping.max_points_per_voxel,
         )
+        self.registration = get_registration(kiss_config)
 
     def register_points(self, points, timestamps, scan_index):
         # Apply motion compensation

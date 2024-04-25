@@ -239,7 +239,7 @@ class MapMOSPipeline(OdometryPipeline):
 
     def _run_evaluation(self):
         if self.has_gt:
-            self.results.eval_odometry(self.odometry.poses, self.gt_poses)
+            self.results.eval_odometry(self.poses, self.gt_poses)
         self.results.eval_mos(self.confusion_matrix_belief, desc="\nBelief")
         self.results.eval_fps(self.times_mos, desc="\nAverage Frequency MOS")
         self.results.eval_fps(self.times_belief, desc="Average Frequency Belief")
