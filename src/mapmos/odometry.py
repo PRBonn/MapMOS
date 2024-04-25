@@ -59,7 +59,7 @@ class Odometry(KissICP):
 
     def register_points(self, points, timestamps, scan_index):
         # Apply motion compensation
-        points = self.compensator.deskew_scan(points, self.poses, timestamps)
+        points = self.compensator.deskew_scan(points, timestamps, self.last_delta)
 
         # Preprocess the input cloud
         points_prep = self.preprocess(points)
@@ -68,13 +68,12 @@ class Odometry(KissICP):
         source, points_downsample = self.voxelize(points_prep)
 
         # Get motion prediction and adaptive_threshold
-        sigma = self.get_adaptive_threshold()
+        sigma = self.adaptive_threshold.get_threshold()
 
         # Compute initial_guess for ICP
-        prediction = self.get_prediction_model()
-        initial_guess = self.current_pose() @ prediction
+        initial_guess = self.last_pose @ self.last_delta
 
-        new_pose = register_frame(
+        new_pose = self.registration.align_points_to_map(
             points=source,
             voxel_map=self.local_map,
             initial_guess=initial_guess,
@@ -82,11 +81,16 @@ class Odometry(KissICP):
             kernel=sigma / 3,
         )
 
-        self.adaptive_threshold.update_model_deviation(np.linalg.inv(initial_guess) @ new_pose)
-        self.local_map.update(points_downsample, new_pose, scan_index)
-        self.poses.append(new_pose)
+        # Compute the difference between the prediction and the actual estimate
+        model_deviation = np.linalg.inv(initial_guess) @ new_pose
 
-        points_reg = self.transform(points, self.current_pose())
+        # Update step: threshold, local map, delta, and the last pose
+        self.adaptive_threshold.update_model_deviation(model_deviation)
+        self.local_map.update(points_downsample, new_pose, scan_index)
+        self.last_delta = np.linalg.inv(self.last_pose) @ new_pose
+        self.last_pose = new_pose
+
+        points_reg = self.transform(points, self.last_pose)
         return np.asarray(points_reg)
 
     def get_map_points(self):
@@ -98,11 +102,5 @@ class Odometry(KissICP):
         points = (pose @ points_hom.T).T[:, :3]
         return points
 
-    def get_poses(self):
-        return self.poses
-
-    def current_pose(self):
-        return self.poses[-1] if self.poses else np.eye(4)
-
     def current_location(self):
-        return self.current_pose()[:3, 3]
+        return self.last_pose[:3, 3]

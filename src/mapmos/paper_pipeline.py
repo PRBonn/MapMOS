@@ -72,6 +72,7 @@ class PaperPipeline(MapMOSPipeline):
             local_scan, timestamps, gt_labels = self._next(scan_index)
             map_points, map_indices = self.odometry.get_map_points()
             scan_points = self.odometry.register_points(local_scan, timestamps, scan_index)
+            self.poses.append(self.odometry.last_pose)
 
             min_range_mos = self.config.mos.min_range_mos
             max_range_mos = self.config.mos.max_range_mos
@@ -165,7 +166,7 @@ class PaperPipeline(MapMOSPipeline):
                     pred_labels_map,
                     belief_labels_scan,
                     belief_labels_map,
-                    self.odometry.current_pose(),
+                    self.odometry.last_pose,
                 )
 
             # Probabilistic volumetric fusion with scan and moving map predictions and delay
@@ -185,7 +186,7 @@ class PaperPipeline(MapMOSPipeline):
 
     def _run_evaluation(self):
         if self.has_gt:
-            self.results.eval_odometry(self.odometry.get_poses(), self.gt_poses)
+            self.results.eval_odometry(self.poses, self.gt_poses)
         self.results.eval_mos(self.confusion_matrix_mos, desc="\nScan Prediction")
         self.results.eval_fps(self.times_mos, desc="Average Frequency MOS")
         self.results.eval_mos(self.confusion_matrix_belief_scan_only, desc="\nBelief, Scan Only")
