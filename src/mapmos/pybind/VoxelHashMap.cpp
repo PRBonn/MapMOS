@@ -28,7 +28,6 @@
 
 #include <Eigen/Core>
 #include <algorithm>
-#include <iostream>
 #include <limits>
 #include <tuple>
 #include <utility>
