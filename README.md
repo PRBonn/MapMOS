@@ -3,7 +3,7 @@
   <a href="https://github.com/PRBonn/MapMOS#how-to-use-it"><img src="https://img.shields.io/badge/python-3670A0?style=flat-square&logo=python&logoColor=ffdd54" /></a>
     <a href="https://github.com/PRBonn/MapMOS#installation"><img src="https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black" /></a>
     <a href="https://www.ipb.uni-bonn.de/wp-content/papercite-data/pdf/mersch2023ral.pdf"><img src="https://img.shields.io/badge/Paper-pdf-<COLOR>.svg?style=flat-square" /></a>
-    <a href="https://lbesson.mit-license.org/"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
 
 <p>
   <img src="https://github.com/PRBonn/MapMOS/assets/38326482/cd594591-8c2c-41f0-8412-cd5d1d2fd7d4" width="500"/>
