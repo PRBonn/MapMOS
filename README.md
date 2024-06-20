@@ -2,7 +2,7 @@
   <h1>Building Volumetric Beliefs for Dynamic Environments Exploiting Map-Based Moving Object Segmentation</h1>
   <a href="https://github.com/PRBonn/MapMOS#how-to-use-it"><img src="https://img.shields.io/badge/python-3670A0?style=flat-square&logo=python&logoColor=ffdd54" /></a>
     <a href="https://github.com/PRBonn/MapMOS#installation"><img src="https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black" /></a>
-    <a href="https://www.ipb.uni-bonn.de/wp-content/papercite-data/pdf/mersch2023ral.pdf"><img src="https://img.shields.io/badge/Paper-pdf-<COLOR>.svg?style=flat-square" /></a>
+    <a href="https://www.ipb.uni-bonn.de/pdfs/mersch2023ral.pdf"><img src="https://img.shields.io/badge/Paper-pdf-<COLOR>.svg?style=flat-square" /></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
 
 <p>
@@ -115,7 +115,7 @@ You can download the post-processed and labeled [Apollo dataset](https://www.ipb
 The [weights](https://www.ipb.uni-bonn.de/html/projects/MapMOS/mapmos.ckpt) of our pre-trained model can be downloaded as well.
 
 ## Publication
-If you use our code in your academic work, please cite the corresponding [paper](http://www.ipb.uni-bonn.de/pdfs/mersch2023ral.pdf):
+If you use our code in your academic work, please cite the corresponding [paper](https://www.ipb.uni-bonn.de/pdfs/mersch2023ral.pdf):
 
 ```bibtex
 @article{mersch2023ral,
