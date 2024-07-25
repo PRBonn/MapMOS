@@ -72,7 +72,7 @@ class PaperPipeline(MapMOSPipeline):
             local_scan, timestamps, gt_labels = self._next(scan_index)
             map_points, map_indices = self.odometry.get_map_points()
             scan_points = self.odometry.register_points(local_scan, timestamps, scan_index)
-            self.poses.append(self.odometry.last_pose)
+            self.poses[scan_index - self._first] = self.odometry.last_pose
 
             min_range_mos = self.config.mos.min_range_mos
             max_range_mos = self.config.mos.max_range_mos
