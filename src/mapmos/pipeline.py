@@ -82,7 +82,7 @@ class MapMOSPipeline(OdometryPipeline):
 
         # Results
         self.results = MOSPipelineResults()
-        self.poses = self.odometry.poses
+        self.poses = np.zeros((self._n_scans, 4, 4))
         self.has_gt = hasattr(self._dataset, "gt_poses")
         self.gt_poses = self._dataset.gt_poses[self._first : self._last] if self.has_gt else None
         self.dataset_name = self._dataset.__class__.__name__
@@ -127,6 +127,7 @@ class MapMOSPipeline(OdometryPipeline):
             local_scan, timestamps, gt_labels = self._next(scan_index)
             map_points, map_indices = self.odometry.get_map_points()
             scan_points = self.odometry.register_points(local_scan, timestamps, scan_index)
+            self.poses[scan_index - self._first] = self.odometry.last_pose
 
             min_range_mos = self.config.mos.min_range_mos
             max_range_mos = self.config.mos.max_range_mos
@@ -187,7 +188,7 @@ class MapMOSPipeline(OdometryPipeline):
                     pred_labels_map,
                     belief_labels_scan,
                     belief_labels_map,
-                    self.odometry.current_pose(),
+                    self.odometry.last_pose,
                 )
 
             # Evaluate and save with delay
@@ -238,7 +239,7 @@ class MapMOSPipeline(OdometryPipeline):
 
     def _run_evaluation(self):
         if self.has_gt:
-            self.results.eval_odometry(self.odometry.get_poses(), self.gt_poses)
+            self.results.eval_odometry(self.poses, self.gt_poses)
         self.results.eval_mos(self.confusion_matrix_belief, desc="\nBelief")
         self.results.eval_fps(self.times_mos, desc="\nAverage Frequency MOS")
         self.results.eval_fps(self.times_belief, desc="Average Frequency Belief")

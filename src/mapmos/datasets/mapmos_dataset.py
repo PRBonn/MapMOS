@@ -236,7 +236,7 @@ class MapMOSDataset(Dataset):
         self.gt_map.remove_voxels_far_from_location(self.odometry.current_location())
 
         map_points = self.odometry.transform(
-            registered_map_points, np.linalg.inv(self.odometry.current_pose())
+            registered_map_points, np.linalg.inv(self.odometry.last_pose)
         )
 
         scan_timestamps = scan_index * np.ones(len(scan_points))
