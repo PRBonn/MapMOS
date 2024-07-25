@@ -1,6 +1,6 @@
 [project]
 name = "mapmos"
-version = "0.0.1"
+version = "1.0.0"
 description = "Building Volumetric Beliefs for Dynamic Environments Exploiting Map-Based Moving Object Segmentation"
 readme = "README.md"
 authors = [
@@ -8,7 +8,7 @@ authors = [
 ]
 license_files = "LICENSE"
 dependencies = [
-    "kiss-icp<=0.4.0",
+    "kiss-icp>=1.0.0",
     "diskcache>=5.3.0",
     "pytorch_lightning>=1.6.4",
 ]
