@@ -44,6 +44,7 @@ def sequence_dataloaders():
         "kitti_tracking",
         "nuscenes",
         "apollo",
+        "helimos",
     ]
 
 

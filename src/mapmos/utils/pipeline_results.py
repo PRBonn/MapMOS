@@ -42,7 +42,7 @@ class MOSPipelineResults(PipelineResults):
         self.append(desc="Average Translation Error", units="%", value=avg_tra)
         self.append(desc="Average Rotational Error", units="deg/m", value=avg_rot)
         self.append(desc="Absoulte Trajectory Error (ATE)", units="m", value=ate_trans)
-        self.append(desc="Absoulte Rotational Error (ARE)", units="rad", value=ate_rot)
+        self.append(desc="Absoulte Rotational Error (ARE)\n", units="rad", value=ate_rot)
 
     def eval_mos(self, confusion_matrix, desc=""):
         iou = get_iou(confusion_matrix)
@@ -57,7 +57,7 @@ class MOSPipelineResults(PipelineResults):
         self.append(desc="Moving F1", units="%", value=f1[1].item() * 100)
         self.append(desc="Moving TP", units="points", value=int(tp[1].item()))
         self.append(desc="Moving FP", units="points", value=int(fp[1].item()))
-        self.append(desc="Moving FN", units="points", value=int(fn[1].item()))
+        self.append(desc="Moving FN\n", units="points", value=int(fn[1].item()))
 
     def eval_fps(self, times, desc="Average Frequency"):
         def _get_fps(times):

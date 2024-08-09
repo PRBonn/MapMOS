@@ -69,10 +69,14 @@ class TrainingModule(LightningModule):
         batch_scan = batch[self.mask_scan(batch)]
         num_moving_points = len(batch_scan[batch_scan[:, -1] == 1.0])
         num_points = len(batch_scan)
-        if num_moving_points / num_points < 0.001:
+        if num_points == 0 or num_moving_points / num_points < 0.001:
             return None
 
         batch = self.augmentation(batch)
+
+        # Only train if enough points are left
+        if len(batch) < 100:
+            return None
 
         coordinates = batch[:, :5].reshape(-1, 5)
         features = batch[:, 5].reshape(-1, 1)
@@ -118,6 +122,9 @@ class TrainingModule(LightningModule):
 
     def validation_step(self, batch: torch.Tensor, batch_idx):
         # Batch is [batch,x,y,z,t,scan_idx,label]
+        if len(batch) < 100:
+            return None
+
         coordinates = batch[:, :5].reshape(-1, 5)
         features = batch[:, 5].reshape(-1, 1)
         gt_labels = batch[:, 6].reshape(-1)

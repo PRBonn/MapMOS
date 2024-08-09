@@ -80,7 +80,8 @@ class MapMOSNet(LightningModule):
         logits = out.features.reshape(-1)
         return logits
 
-    def to_label(self, logits):
+    @staticmethod
+    def to_label(logits):
         labels = copy.deepcopy(logits)
         mask = logits > 0
         labels[mask] = 1.0
