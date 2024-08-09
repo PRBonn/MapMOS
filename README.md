@@ -113,7 +113,7 @@ To train on the HeLiMOS data with different sensor configurations, use the follo
 
 ```shell
 python3 scripts/precache.py /path/to/HeLiMOS helimos /path/to/cache --config config/helimos/*_training.yaml
-python3 scripts/train.py /path/to/HeLiMOS /path/to/cache --config config/helimos/*_training.yaml
+python3 scripts/train.py /path/to/HeLiMOS helimos /path/to/cache --config config/helimos/*_training.yaml
 ```
 
 by replacing the paths and the config file names. To evaluate for example on the Velodyne test data, run
