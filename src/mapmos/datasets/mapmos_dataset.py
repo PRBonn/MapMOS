@@ -105,6 +105,7 @@ class MapMOSDataModule(LightningDataModule):
             shuffle=self.shuffle,
             num_workers=self.config.training.num_workers,
             pin_memory=True,
+            persistent_workers=True,
             drop_last=False,
             timeout=0,
         )
@@ -118,6 +119,7 @@ class MapMOSDataModule(LightningDataModule):
             shuffle=False,
             num_workers=self.config.training.num_workers,
             pin_memory=True,
+            persistent_workers=True,
             drop_last=False,
             timeout=0,
         )
