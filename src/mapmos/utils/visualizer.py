@@ -137,9 +137,9 @@ class MapMOSVisualizer(StubVisualizer):
             scan_points,
             point_render_mode="quad",
         )
-        
+
         scan_colors = np.zeros((len(pred_labels_scan), 3))
-        scan_colors[pred_labels_scan == 1,:] = [1, 0, 0]
+        scan_colors[pred_labels_scan == 1, :] = [1, 0, 0]
         scan_cloud.set_radius(self._frame_size, relative=False)
         scan_cloud.add_color_quantity("colors", scan_colors, enabled=True)
         if self._global_view:
@@ -154,7 +154,7 @@ class MapMOSVisualizer(StubVisualizer):
             point_render_mode="quad",
         )
         map_colors = np.zeros((len(pred_labels_map), 3))
-        map_colors[pred_labels_map == 1,:] = [1, 0, 0]
+        map_colors[pred_labels_map == 1, :] = [1, 0, 0]
         map_cloud.set_radius(self._map_size, relative=False)
         map_cloud.add_color_quantity("colors", map_colors, enabled=True)
         if self._global_view:
@@ -177,7 +177,7 @@ class MapMOSVisualizer(StubVisualizer):
 
     def _screenshot_callback(self):
         if self._gui.Button(SCREENSHOT_BUTTON) or self._gui.IsKeyPressed(self._gui.ImGuiKey_S):
-            image_filename = "kisshot_" + (
+            image_filename = "mapmos_" + (
                 datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
             )
             self._ps.screenshot(image_filename)
