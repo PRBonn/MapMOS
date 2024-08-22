@@ -34,16 +34,49 @@ SCREENSHOT_BUTTON = "SCREENSHOT\n\t\t  [S]"
 LOCAL_VIEW_BUTTON = "LOCAL VIEW\n\t\t [G]"
 GLOBAL_VIEW_BUTTON = "GLOBAL VIEW\n\t\t  [G]"
 CENTER_VIEWPOINT_BUTTON = "CENTER VIEWPOINT\n\t\t\t\t[C]"
+SHOW_BELIEF_BUTTON = "SHOW BELIEF\n\t\t\t[V]"
+HIDE_BELIEF_BUTTON = "HIDE BELIEF\n\t\t  [V]"
 QUIT_BUTTON = "QUIT\n  [Q]"
 
 # Colors
 BACKGROUND_COLOR = [0.0, 0.0, 0.0]
 FRAME_COLOR = [0.8470, 0.1058, 0.3764]
 MAP_COLOR = [0.0, 0.3019, 0.2509]
+BELIEF_COLOR = [0.9, 0.9, 0.9]
 
 # Size constants
 FRAME_PTS_SIZE = 0.06
 MAP_PTS_SIZE = 0.08
+
+# Voxels Prototype
+VOXEL_VERTICES = np.array(
+    [
+        [0, 0, 0],
+        [1, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+        [1, 0, 1],
+        [1, 1, 1],
+        [0, 1, 1],
+    ]
+).astype(np.float64)
+VOXEL_EDGES = np.array(
+    [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [0, 3],
+        [0, 4],
+        [5, 4],
+        [1, 5],
+        [5, 6],
+        [2, 6],
+        [6, 7],
+        [3, 7],
+        [4, 7],
+    ]
+).astype(np.int64)
 
 
 class StubVisualizer(ABC):
@@ -56,10 +89,12 @@ class StubVisualizer(ABC):
         map_points,
         pred_labels_scan,
         pred_labels_map,
-        belief_labels_scan,
-        belief_labels_map,
+        belief_map,
         pose,
     ):
+        pass
+
+    def set_voxel_size(self, voxel_size):
         pass
 
 
@@ -81,8 +116,10 @@ class MapMOSVisualizer(StubVisualizer):
         self._play_mode = False
         self._toggle_frame = True
         self._toggle_map = True
+        self._toggle_belief = False
         self._global_view = False
         self._last_pose = np.eye(4)
+        self._voxel_size = 1.0
 
         # Initialize Visualizer
         self._initialize_visualizer()
@@ -93,8 +130,7 @@ class MapMOSVisualizer(StubVisualizer):
         map_points,
         pred_labels_scan,
         pred_labels_map,
-        belief_labels_scan,
-        belief_labels_map,
+        belief_map,
         pose,
     ):
         self._update_geometries(
@@ -102,8 +138,7 @@ class MapMOSVisualizer(StubVisualizer):
             map_points,
             pred_labels_scan,
             pred_labels_map,
-            belief_labels_scan,
-            belief_labels_map,
+            belief_map,
             pose,
         )
         while self._block_execution:
@@ -111,6 +146,9 @@ class MapMOSVisualizer(StubVisualizer):
             if self._play_mode:
                 break
         self._block_execution = not self._block_execution
+
+    def set_voxel_size(self, voxel_size):
+        self._voxel_size = voxel_size
 
     # Private Interface ---------------------------------------------------------------------------
     def _initialize_visualizer(self):
@@ -128,8 +166,7 @@ class MapMOSVisualizer(StubVisualizer):
         map_points,
         pred_labels_scan,
         pred_labels_map,
-        belief_labels_scan,
-        belief_labels_map,
+        belief_map,
         pose,
     ):
         scan_cloud = self._ps.register_point_cloud(
@@ -163,13 +200,53 @@ class MapMOSVisualizer(StubVisualizer):
             map_cloud.set_transform(np.linalg.inv(pose))
         map_cloud.set_enabled(self._toggle_map)
 
+        # VOXEL GRID (only if toggled)
+        self._last_belief_map = belief_map
+        if self._toggle_belief:
+            self._register_belief()
+
         self._last_pose = pose
+
+    def _register_belief(self):
+        if self._last_belief_map is None:
+            return
+        voxels, belief = self._last_belief_map.voxels_with_belief()
+        
+        belief_nodes = np.zeros((voxels.shape[0] * 8, 3), dtype=np.float64)
+        belief_colors = np.zeros((voxels.shape[0] * 8, 3), dtype=np.float64)
+        belief_edges = np.zeros((voxels.shape[0] * 12, 2), dtype=np.int64)
+
+        for idx, (voxel, belief) in enumerate(zip(voxels, belief)):
+            verts = np.copy(VOXEL_VERTICES) + voxel
+            verts = verts * self._voxel_size
+            edges = np.copy(VOXEL_EDGES) + (idx * 8)
+            belief_nodes[idx * 8 : idx * 8 + 8] = verts
+            belief_colors[idx * 8 : idx * 8 + 8] = [1, 0, 0] if belief > 0 else BELIEF_COLOR
+            belief_edges[idx * 12 : idx * 12 + 12] = edges
+
+        belief = self._ps.register_curve_network("belief", belief_nodes, belief_edges)
+        belief.set_radius(0.01, relative=False)
+        belief.add_color_quantity("belief", belief_colors, enabled=True)
+        if self._global_view:
+            belief.set_transform(np.eye(4))
+        else:
+            belief.set_transform(np.linalg.inv(self._last_pose))
+
+    def _unregister_belief(self):
+        if self._ps.has_curve_network("belief"):
+            self._ps.remove_curve_network("belief")
 
     # GUI Callbacks ---------------------------------------------------------------------------
     def _start_pause_callback(self):
         button_name = PAUSE_BUTTON if self._play_mode else START_BUTTON
         if self._gui.Button(button_name) or self._gui.IsKeyPressed(self._gui.ImGuiKey_Space):
             self._play_mode = not self._play_mode
+            if self._play_mode:
+                self._toggle_belief = False
+                self._unregister_belief()
+                self._ps.set_SSAA_factor(1)
+            else:
+                self._ps.set_SSAA_factor(4)
 
     def _next_frame_callback(self):
         if self._gui.Button(NEXT_FRAME_BUTTON) or self._gui.IsKeyPressed(self._gui.ImGuiKey_N):
@@ -219,6 +296,18 @@ class MapMOSVisualizer(StubVisualizer):
         if changed:
             self._ps.set_background_color(self._background_color)
 
+    def _inspection_callback(self):
+        if self._gui.TreeNodeEx("Inspection", self._gui.ImGuiTreeNodeFlags_DefaultOpen):
+            # VOXEL GRID Button
+            belief_button_name = HIDE_BELIEF_BUTTON if self._toggle_belief else SHOW_BELIEF_BUTTON
+            if self._gui.Button(belief_button_name) or self._gui.IsKeyPressed(self._gui.ImGuiKey_V):
+                self._toggle_belief = not self._toggle_belief
+                if self._toggle_belief:
+                    self._register_belief()
+                else:
+                    self._unregister_belief()
+            self._gui.TreePop()
+
     def _global_view_callback(self):
         button_name = LOCAL_VIEW_BUTTON if self._global_view else GLOBAL_VIEW_BUTTON
         if self._gui.Button(button_name) or self._gui.IsKeyPressed(self._gui.ImGuiKey_G):
@@ -226,9 +315,15 @@ class MapMOSVisualizer(StubVisualizer):
             if self._global_view:
                 self._ps.get_point_cloud("scan").set_transform(self._last_pose)
                 self._ps.get_point_cloud("map").set_transform(np.eye(4))
+                if self._toggle_belief:
+                    self._ps.get_curve_network("belief").set_transform(np.eye(4))
             else:
                 self._ps.get_point_cloud("scan").set_transform(np.eye(4))
                 self._ps.get_point_cloud("map").set_transform(np.linalg.inv(self._last_pose))
+                if self._toggle_belief:
+                    self._ps.get_curve_network("belief").set_transform(
+                        np.linalg.inv(self._last_pose)
+                    )
             self._ps.reset_camera_to_home_view()
 
     def _quit_callback(self):
@@ -255,6 +350,9 @@ class MapMOSVisualizer(StubVisualizer):
         self._gui.Separator()
         self._toggle_buttons_andslides_callback()
         self._background_color_callback()
+        if not self._play_mode:
+            self._gui.Separator()
+            self._inspection_callback()
         self._global_view_callback()
         self._gui.SameLine()
         self._center_viewpoint_callback()

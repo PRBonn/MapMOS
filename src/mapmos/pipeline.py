@@ -98,7 +98,7 @@ class MapMOSPipeline(OdometryPipeline):
         # Visualizer
         self.visualize = visualize
         self.visualizer = MapMOSVisualizer() if visualize else StubVisualizer()
-
+        self.visualizer.set_voxel_size(self.config.mos.voxel_size_mos)
         self.ply_writer = PlyWriter() if save_ply else StubWriter()
         self.kitti_writer = KITTIWriter() if save_kitti else StubWriter()
 
@@ -174,22 +174,16 @@ class MapMOSPipeline(OdometryPipeline):
 
             start_time = time.perf_counter_ns()
             self.belief.update_belief(points_stacked, logits_stacked)
-            belief_scan = self.belief.get_belief(scan_points)
             self.times_belief.append(time.perf_counter_ns() - start_time)
-            belief_labels_scan = self.model.to_label(belief_scan)
 
-            if self.visualize:
-                belief_map = self.belief.get_belief(map_points)
-                belief_labels_map = self.model.to_label(belief_map)
-                self.visualizer.update(
-                    scan_points,
-                    map_points,
-                    pred_labels_scan,
-                    pred_labels_map,
-                    belief_labels_scan,
-                    belief_labels_map,
-                    self.odometry.last_pose,
-                )
+            self.visualizer.update(
+                scan_points,
+                map_points,
+                pred_labels_scan,
+                pred_labels_map,
+                self.belief,
+                self.odometry.last_pose,
+            )
 
             # Evaluate and save with delay
             self.buffer.append([scan_index, scan_points, gt_labels])
