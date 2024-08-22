@@ -98,7 +98,7 @@ class MapMOSPipeline(OdometryPipeline):
         # Visualizer
         self.visualize = visualize
         self.visualizer = MapMOSVisualizer() if visualize else StubVisualizer()
-        self.visualizer.set_voxel_size(self.config.mos.voxel_size_mos)
+        self.visualizer.set_voxel_size(self.config.mos.voxel_size_belief)
         self.ply_writer = PlyWriter() if save_ply else StubWriter()
         self.kitti_writer = KITTIWriter() if save_kitti else StubWriter()
 
