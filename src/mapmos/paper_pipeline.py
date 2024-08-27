@@ -158,19 +158,14 @@ class PaperPipeline(MapMOSPipeline):
                 torch.tensor(gt_labels, dtype=torch.int32),
             )
 
-            belief_labels_scan = belief_labels_with_map
-            if self.visualize:
-                belief_map = self.belief.get_belief(map_points)
-                belief_labels_map = self.model.to_label(belief_map)
-                self.visualizer.update(
-                    scan_points,
-                    map_points,
-                    pred_labels_scan,
-                    pred_labels_map,
-                    belief_labels_scan,
-                    belief_labels_map,
-                    self.odometry.last_pose,
-                )
+            self.visualizer.update(
+                scan_points,
+                map_points,
+                pred_labels_scan,
+                pred_labels_map,
+                self.belief,
+                self.odometry.last_pose,
+            )
 
             # Probabilistic volumetric fusion with scan and moving map predictions and delay
             self.buffer.append([scan_index, scan_points, gt_labels])
