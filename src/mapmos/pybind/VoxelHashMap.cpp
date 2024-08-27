@@ -96,7 +96,7 @@ void VoxelHashMap::Update(const std::vector<Eigen::Vector3d> &points,
 
 void VoxelHashMap::AddPoints(const std::vector<Eigen::Vector3d> &points, const int timestamp) {
     std::for_each(points.cbegin(), points.cend(), [&](const auto &point) {
-        auto voxel = Voxel((point / voxel_size_).template cast<int>());
+        const auto voxel = PointToVoxel(point);
         auto search = map_.find(voxel);
         if (search != map_.end()) {
             auto &voxel_block = search.value();
@@ -126,7 +126,7 @@ void VoxelHashMap::UpdateBelief(const std::vector<Eigen::Vector3d> &points,
     std::vector<Voxel> voxels_to_update;
     voxels_to_update.reserve(points.size());
     for (size_t i = 0; i < points.size(); i++) {
-        auto voxel = Voxel((points[i] / voxel_size_).template cast<int>());
+        auto voxel = PointToVoxel(points[i]);
         voxels_to_update.emplace_back(voxel);
         map_[voxel].belief.accumulatePartialUpdate(updates[i]);
     }
@@ -138,7 +138,7 @@ void VoxelHashMap::UpdateBelief(const std::vector<Eigen::Vector3d> &points,
 std::vector<double> VoxelHashMap::GetBelief(const std::vector<Eigen::Vector3d> &points) const {
     std::vector<double> beliefs(points.size(), 0.0);
     std::transform(points.cbegin(), points.cend(), beliefs.begin(), [this](const auto &p) {
-        auto voxel = Voxel((p / voxel_size_).template cast<int>());
+        auto voxel = PointToVoxel(p);
         if (map_.contains(voxel)) {
             return map_.at(voxel).belief.value_;
         }
