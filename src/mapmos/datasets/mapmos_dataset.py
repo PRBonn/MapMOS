@@ -105,6 +105,7 @@ class MapMOSDataModule(LightningDataModule):
             shuffle=self.shuffle,
             num_workers=self.config.training.num_workers,
             pin_memory=True,
+            persistent_workers=True,
             drop_last=False,
             timeout=0,
         )
@@ -118,6 +119,7 @@ class MapMOSDataModule(LightningDataModule):
             shuffle=False,
             num_workers=self.config.training.num_workers,
             pin_memory=True,
+            persistent_workers=True,
             drop_last=False,
             timeout=0,
         )
@@ -148,6 +150,7 @@ class MapMOSDataset(Dataset):
     ):
         self.config = config
         self.sequences = sequences
+        self._print = False
 
         # Cache
         if cache_dir is not None:
@@ -208,6 +211,10 @@ class MapMOSDataset(Dataset):
         local frame to allow for efficient cropping (sample point does not change). We use the
         VoxelHashMap to keep track of the GT labels for map points.
         """
+        if not self._print:
+            print("*****Caching now*****")
+            self._print = True
+
         scan_points, timestamps, scan_labels = self.datasets[sequence][scan_index]
 
         # Only consider valid points
@@ -215,7 +222,7 @@ class MapMOSDataset(Dataset):
         scan_points = scan_points[valid_mask]
         scan_labels = scan_labels[valid_mask]
 
-        if self.sequence != sequence:
+        if self.sequence != sequence or len(scan_points) == 0:
             data_config = DataConfig().model_validate(data_config_dict)
             odometry_config = OdometryConfig().model_validate(odometry_config_dict)
 

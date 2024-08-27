@@ -82,7 +82,7 @@ def cache_to_ply(
             dataloader=dataloader,
             data_dir=data,
             config=cfg,
-            sequences=sequence,
+            sequences=[sequence],
             cache_dir=cache_dir,
         ),
         batch_size=1,
@@ -103,36 +103,37 @@ def cache_to_ply(
     for idx, batch in enumerate(
         tqdm(data_iterable, desc="Writing data to ply", unit=" items", dynamic_ncols=True)
     ):
-        mask_scan = batch[:, 4] == idx
-        scan_points = batch[mask_scan, 1:4]
-        scan_labels = batch[mask_scan, 6]
+        if len(batch) > 0:
+            mask_scan = batch[:, 4] == idx
+            scan_points = batch[mask_scan, 1:4]
+            scan_labels = batch[mask_scan, 6]
 
-        map_points = batch[~mask_scan, 1:4]
-        map_timestamps = batch[~mask_scan, 5]
-        map_labels = batch[~mask_scan, 6]
+            map_points = batch[~mask_scan, 1:4]
+            map_timestamps = batch[~mask_scan, 5]
+            map_labels = batch[~mask_scan, 6]
 
-        min_time = torch.min(batch[:, 5])
-        max_time = torch.max(batch[:, 5])
+            min_time = torch.min(batch[:, 5])
+            max_time = torch.max(batch[:, 5])
 
-        pcd_scan = o3d.geometry.PointCloud(
-            o3d.utility.Vector3dVector(scan_points.numpy())
-        ).paint_uniform_color([0, 0, 1])
-        scan_colors = np.array(pcd_scan.colors)
-        scan_colors[scan_labels == 1] = [1, 0, 0]
-        pcd_scan.colors = o3d.utility.Vector3dVector(scan_colors)
+            pcd_scan = o3d.geometry.PointCloud(
+                o3d.utility.Vector3dVector(scan_points.numpy())
+            ).paint_uniform_color([0, 0, 1])
+            scan_colors = np.array(pcd_scan.colors)
+            scan_colors[scan_labels == 1] = [1, 0, 0]
+            pcd_scan.colors = o3d.utility.Vector3dVector(scan_colors)
 
-        pcd_map = o3d.geometry.PointCloud(
-            o3d.utility.Vector3dVector(map_points.numpy())
-        ).paint_uniform_color([0, 0, 0])
-        map_colors = np.array(pcd_map.colors)
-        map_timestamps_norm = (map_timestamps - min_time) / (max_time - min_time)
-        for i in range(len(map_colors)):
-            t = map_timestamps_norm[i]
-            map_colors[i, :] = [t, t, t]
-        map_colors[map_labels == 1] = [1, 0, 0]
-        pcd_map.colors = o3d.utility.Vector3dVector(map_colors)
+            pcd_map = o3d.geometry.PointCloud(
+                o3d.utility.Vector3dVector(map_points.numpy())
+            ).paint_uniform_color([0, 0, 0])
+            map_colors = np.array(pcd_map.colors)
+            map_timestamps_norm = (map_timestamps - min_time) / (max_time - min_time)
+            for i in range(len(map_colors)):
+                t = map_timestamps_norm[i]
+                map_colors[i, :] = [t, t, t]
+            map_colors[map_labels == 1] = [1, 0, 0]
+            pcd_map.colors = o3d.utility.Vector3dVector(map_colors)
 
-        o3d.io.write_point_cloud(os.path.join(path, f"{idx:06}.ply"), pcd_scan + pcd_map)
+            o3d.io.write_point_cloud(os.path.join(path, f"{idx:06}.ply"), pcd_scan + pcd_map)
 
 
 if __name__ == "__main__":

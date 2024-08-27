@@ -78,7 +78,7 @@ class MapMOSPipeline(OdometryPipeline):
             voxel_size=self.config.mos.voxel_size_belief,
             max_distance=self.config.mos.max_range_belief,
         )
-        self.buffer = deque(maxlen=self.config.mos.delay_belief)
+        self.buffer = deque(maxlen=self.config.mos.delay_mos)
 
         # Results
         self.results = MOSPipelineResults()

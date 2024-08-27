@@ -71,7 +71,7 @@ mapmos_pipeline --visualize /path/to/weights.ckpt /path/to/data
 <details>
 <summary>Want to evaluate with ground truth labels?</summary>
 
-Because these lables come in all shapes, you need to specify a dataloader. This is currently available for SemanticKITTI and NuScenes as well as our post-processed KITTI Tracking sequence 19 and Apollo sequences (see [Downloads](#downloads)).
+Because these labels come in all shapes, you need to specify a dataloader. This is currently available for SemanticKITTI, NuScenes, HeLiMOS, and our labeled KITTI Tracking sequence 19 and Apollo sequences (see [Downloads](#downloads)).
 
 </details>
 
@@ -108,6 +108,21 @@ The training log and checkpoints will be saved by default to the current working
 
 </details>
 
+## HeLiMOS
+We provide additional training and evaluation data for different sensor types in our [HeLiMOS paper](https://www.ipb.uni-bonn.de/pdfs/lim2024iros.pdf). To train on the HeLiMOS data, use the following commands:
+
+```shell
+python3 scripts/precache.py /path/to/HeLiMOS helimos /path/to/cache --config config/helimos/*_training.yaml
+python3 scripts/train.py /path/to/HeLiMOS helimos /path/to/cache --config config/helimos/*_training.yaml
+```
+
+by replacing the paths and the config file names. To evaluate for example on the Velodyne test data, run
+
+```shell
+mapmos_pipeline /path/to/weights.ckpt /path/to/HeLiMOS --dataloader helimos -s Velodyne/test.txt
+```
+
+Note that our sequence `-s` encodes both the sensor type `Velodyne` and split `test.txt`, just replace these with `Ouster`, `Aeva`, or `Avia` and/or `train.txt` or `val.txt` to run MapMOS on different sensors and/or splits. 
 
 ## Downloads
 You can download the post-processed and labeled [Apollo dataset](https://www.ipb.uni-bonn.de/html/projects/apollo_dataset/LiDAR-MOS.zip) and [KITTI Tracking sequence 19](https://www.ipb.uni-bonn.de/html/projects/kitti-tracking/post-processed/kitti-tracking.zip) from our website.

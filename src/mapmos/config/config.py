@@ -39,11 +39,11 @@ class OdometryConfig(BaseModel):
 
 class MOSConfig(BaseModel):
     voxel_size_mos: float = 0.1
+    delay_mos: int = 10
     max_range_mos: float = 50.0
     min_range_mos: float = 0.0
     voxel_size_belief: float = 0.25
     max_range_belief: float = 150
-    delay_belief: int = 10
 
 
 class TrainingConfig(BaseModel):
