@@ -68,6 +68,7 @@ PYBIND11_MODULE(mapmos_pybind, m) {
         .def("_remove_far_away_points", &VoxelHashMap::RemovePointsFarFromLocation, "origin"_a)
         .def("_point_cloud", &VoxelHashMap::Pointcloud)
         .def("_point_cloud_with_timestamps", &VoxelHashMap::PointcloudWithTimestamps)
+        .def("_voxels_with_belief", &VoxelHashMap::VoxelsWithBelief)
         .def("_update_belief", &VoxelHashMap::UpdateBelief, "points"_a, "updates"_a)
         .def("_get_belief", &VoxelHashMap::GetBelief, "points"_a);
 

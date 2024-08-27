@@ -80,9 +80,9 @@ struct VoxelHashMap {
     inline void Clear() { map_.clear(); }
     inline bool Empty() const { return map_.empty(); }
     inline Voxel PointToVoxel(const Eigen::Vector3d &point) const {
-        return Voxel(static_cast<int>(point.x() / voxel_size_),
-                     static_cast<int>(point.y() / voxel_size_),
-                     static_cast<int>(point.z() / voxel_size_));
+        return Voxel(static_cast<int>(std::floor(point.x() / voxel_size_)),
+                     static_cast<int>(std::floor(point.y() / voxel_size_)),
+                     static_cast<int>(std::floor(point.z() / voxel_size_)));
     }
     void Update(const std::vector<Eigen::Vector3d> &points,
                 const Eigen::Vector3d &origin,
@@ -97,6 +97,7 @@ struct VoxelHashMap {
     void RemovePointsFarFromLocation(const Eigen::Vector3d &origin);
     std::vector<Eigen::Vector3d> Pointcloud() const;
     std::tuple<std::vector<Eigen::Vector3d>, std::vector<int>> PointcloudWithTimestamps() const;
+    std::tuple<std::vector<Voxel>, std::vector<double>> VoxelsWithBelief() const;
     std::vector<Eigen::Vector3d> GetPoints(const std::vector<Voxel> &query_voxels) const;
 
     double voxel_size_;

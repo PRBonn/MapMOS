@@ -114,8 +114,11 @@ class PaperPipeline(MapMOSPipeline):
             )
 
             # Probabilistic volumetric fusion with scan prediction only
+            scan_mask_belief = self._preprocess(scan_points, 0.0, self.config.mos.max_range_belief)
             start_time = time.perf_counter_ns()
-            self.belief_scan_only.update_belief(scan_points, pred_logits_scan)
+            self.belief_scan_only.update_belief(
+                scan_points[scan_mask_belief], pred_logits_scan[scan_mask_belief]
+            )
             belief = self.belief_scan_only.get_belief(scan_points)
             self.times_belief_scan_only.append(time.perf_counter_ns() - start_time)
             belief_labels = (
