@@ -174,6 +174,7 @@ class MapMOSPipeline(OdometryPipeline):
 
             start_time = time.perf_counter_ns()
             self.belief.update_belief(points_stacked, logits_stacked)
+            self.belief.get_belief(scan_points)
             self.times_belief.append(time.perf_counter_ns() - start_time)
 
             self.visualizer.update(
