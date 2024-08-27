@@ -179,10 +179,6 @@ class MapMOSVisualizer(StubVisualizer):
         scan_colors[pred_labels_scan == 1, :] = [1, 0, 0]
         scan_cloud.set_radius(self._frame_size, relative=False)
         scan_cloud.add_color_quantity("colors", scan_colors, enabled=True)
-        if self._global_view:
-            scan_cloud.set_transform(pose)
-        else:
-            scan_cloud.set_transform(np.eye(4))
         scan_cloud.set_enabled(self._toggle_frame)
 
         map_cloud = self._ps.register_point_cloud(
@@ -194,16 +190,20 @@ class MapMOSVisualizer(StubVisualizer):
         map_colors[pred_labels_map == 1, :] = [1, 0, 0]
         map_cloud.set_radius(self._map_size, relative=False)
         map_cloud.add_color_quantity("colors", map_colors, enabled=True)
-        if self._global_view:
-            map_cloud.set_transform(np.eye(4))
-        else:
-            map_cloud.set_transform(np.linalg.inv(pose))
         map_cloud.set_enabled(self._toggle_map)
 
         # VOXEL GRID (only if toggled)
         self._last_belief_map = belief_map
         if self._toggle_belief:
             self._register_belief()
+
+        if self._global_view:
+            scan_cloud.set_transform(np.eye(4))
+            map_cloud.set_transform(np.eye(4))
+        else:
+            inv_pose = np.linalg.inv(pose)
+            scan_cloud.set_transform(inv_pose)
+            map_cloud.set_transform(inv_pose)
 
         self._last_pose = pose
 
@@ -313,17 +313,16 @@ class MapMOSVisualizer(StubVisualizer):
         if self._gui.Button(button_name) or self._gui.IsKeyPressed(self._gui.ImGuiKey_G):
             self._global_view = not self._global_view
             if self._global_view:
-                self._ps.get_point_cloud("scan").set_transform(self._last_pose)
+                self._ps.get_point_cloud("scan").set_transform(np.eye(4))
                 self._ps.get_point_cloud("map").set_transform(np.eye(4))
                 if self._toggle_belief:
                     self._ps.get_curve_network("belief").set_transform(np.eye(4))
             else:
-                self._ps.get_point_cloud("scan").set_transform(np.eye(4))
-                self._ps.get_point_cloud("map").set_transform(np.linalg.inv(self._last_pose))
+                inv_pose=np.linalg.inv(self._last_pose)
+                self._ps.get_point_cloud("scan").set_transform(inv_pose)
+                self._ps.get_point_cloud("map").set_transform(inv_pose)
                 if self._toggle_belief:
-                    self._ps.get_curve_network("belief").set_transform(
-                        np.linalg.inv(self._last_pose)
-                    )
+                    self._ps.get_curve_network("belief").set_transform(inv_pose)
             self._ps.reset_camera_to_home_view()
 
     def _quit_callback(self):
