@@ -109,7 +109,7 @@ The training log and checkpoints will be saved by default to the current working
 </details>
 
 ## HeLiMOS
-To train on the HeLiMOS data with different sensor configurations, use the following commands:
+We provide additional training and evaluation data for different sensor types in our [HeLiMOS paper](https://www.ipb.uni-bonn.de/pdfs/lim2024iros.pdf). To train on the HeLiMOS data, use the following commands:
 
 ```shell
 python3 scripts/precache.py /path/to/HeLiMOS helimos /path/to/cache --config config/helimos/*_training.yaml
