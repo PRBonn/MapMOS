@@ -77,6 +77,17 @@ std::tuple<std::vector<Eigen::Vector3d>, std::vector<int>> VoxelHashMap::Pointcl
     return std::make_tuple(points, timestamps);
 }
 
+std::tuple<std::vector<VoxelHashMap::Voxel>, std::vector<double>> VoxelHashMap::VoxelsWithBelief()
+    const {
+    std::vector<Voxel> voxels;
+    std::vector<double> belief;
+    for (auto map_element : map_) {
+        voxels.push_back(map_element.first);
+        belief.push_back(map_element.second.belief.value_);
+    }
+    return make_tuple(voxels, belief);
+}
+
 void VoxelHashMap::Update(const std::vector<Eigen::Vector3d> &points,
                           const Eigen::Vector3d &origin,
                           const int timestamp) {

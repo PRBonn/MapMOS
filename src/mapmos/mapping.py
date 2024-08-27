@@ -50,6 +50,10 @@ class VoxelHashMap:
         map_points, map_timestamps = self._internal_map._point_cloud_with_timestamps()
         return np.asarray(map_points), np.asarray(map_timestamps)
 
+    def voxels_with_belief(self):
+        voxels, belief = self._internal_map._voxels_with_belief()
+        return np.asarray(voxels), np.asarray(belief)
+    
     def remove_voxels_far_from_location(self, location: np.ndarray):
         self._internal_map._remove_far_away_points(location)
 
