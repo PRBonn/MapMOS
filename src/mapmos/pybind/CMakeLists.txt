@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 cmake_minimum_required(VERSION 3.16...3.26)
-project(${SKBUILD_PROJECT_NAME} LANGUAGES CXX VERSION "${SKBUILD_PROJECT_VERSION}")
+project(mapmos_cpp VERSION 1.0.0 LANGUAGES CXX)
 
 # Setup build options
 option(USE_SYSTEM_EIGEN3 "Use system pre-installed Eigen" ON)
