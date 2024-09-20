@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import numpy as np
+
 from mapmos.datasets.kitti import SemanticKITTIDataset
 
 

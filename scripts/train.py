@@ -22,18 +22,19 @@
 # SOFTWARE.
 
 import os
+from pathlib import Path
+from typing import Optional
+
 import torch
 import typer
-from typing import Optional
-from pathlib import Path
 from pytorch_lightning import Trainer
 from pytorch_lightning import loggers as pl_loggers
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 
+from mapmos.config import load_config
 from mapmos.datasets.mapmos_dataset import MapMOSDataModule
 from mapmos.training_module import TrainingModule
 from mapmos.utils.seed import set_seed
-from mapmos.config import load_config
 
 
 def train(

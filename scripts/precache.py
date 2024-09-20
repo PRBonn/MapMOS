@@ -21,10 +21,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from tqdm import tqdm
 from pathlib import Path
 from typing import List, Optional
+
 import typer
+from tqdm import tqdm
 
 from mapmos.config import load_config
 
@@ -62,6 +63,7 @@ def precache(
     ),
 ):
     from torch.utils.data import DataLoader
+
     from mapmos.datasets.mapmos_dataset import MapMOSDataset, collate_fn
 
     cfg = load_config(config)

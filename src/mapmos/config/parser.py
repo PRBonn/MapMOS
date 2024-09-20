@@ -25,18 +25,12 @@ from __future__ import annotations
 
 import importlib
 import sys
-
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from mapmos.config.config import (
-    DataConfig,
-    OdometryConfig,
-    MOSConfig,
-    TrainingConfig,
-)
+from mapmos.config.config import DataConfig, MOSConfig, OdometryConfig, TrainingConfig
 
 
 class MapMOSConfig(BaseSettings):

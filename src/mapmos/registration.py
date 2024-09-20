@@ -21,8 +21,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import numpy as np
-
 from kiss_icp.config.parser import KISSConfig
+
 from mapmos.mapping import VoxelHashMap
 from mapmos.pybind import mapmos_pybind
 

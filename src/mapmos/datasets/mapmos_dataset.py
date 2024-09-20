@@ -21,18 +21,19 @@
 # SOFTWARE.
 
 import os
-import torch
-import numpy as np
-from typing import Dict
 from pathlib import Path
-from torch.utils.data import Dataset, DataLoader
-from pytorch_lightning import LightningDataModule
+from typing import Dict
 
-from mapmos.utils.cache import get_cache, memoize
-from mapmos.config import MapMOSConfig, DataConfig, OdometryConfig
-from mapmos.odometry import Odometry
-from mapmos.mapping import VoxelHashMap
+import numpy as np
+import torch
+from pytorch_lightning import LightningDataModule
+from torch.utils.data import DataLoader, Dataset
+
+from mapmos.config import DataConfig, MapMOSConfig, OdometryConfig
 from mapmos.datasets import dataset_factory, sequence_dataloaders
+from mapmos.mapping import VoxelHashMap
+from mapmos.odometry import Odometry
+from mapmos.utils.cache import get_cache, memoize
 
 
 def collate_fn(batch):

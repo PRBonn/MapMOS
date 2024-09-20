@@ -22,23 +22,23 @@
 
 import os
 import time
+from collections import deque
 from pathlib import Path
 from typing import Optional
-from collections import deque
-import torch
+
 import numpy as np
+import torch
+from kiss_icp.pipeline import OdometryPipeline
 from tqdm.auto import trange
 
-from kiss_icp.pipeline import OdometryPipeline
-
+from mapmos.config import load_config
 from mapmos.mapmos_net import MapMOSNet
-from mapmos.odometry import Odometry
 from mapmos.mapping import VoxelHashMap
 from mapmos.metrics import get_confusion_matrix
-from mapmos.utils.visualizer import MapMOSVisualizer, StubVisualizer
+from mapmos.odometry import Odometry
 from mapmos.utils.pipeline_results import MOSPipelineResults
-from mapmos.utils.save import PlyWriter, KITTIWriter, StubWriter
-from mapmos.config import load_config
+from mapmos.utils.save import KITTIWriter, PlyWriter, StubWriter
+from mapmos.utils.visualizer import MapMOSVisualizer, StubVisualizer
 
 
 class MapMOSPipeline(OdometryPipeline):

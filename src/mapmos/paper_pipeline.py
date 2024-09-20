@@ -23,8 +23,9 @@
 import time
 from pathlib import Path
 from typing import Optional
-import torch
+
 import numpy as np
+import torch
 from tqdm.auto import trange
 
 from mapmos.mapping import VoxelHashMap

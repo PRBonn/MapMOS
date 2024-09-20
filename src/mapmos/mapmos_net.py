@@ -20,9 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import torch
 import copy
+
 import MinkowskiEngine as ME
+import torch
 from pytorch_lightning import LightningModule
 
 from mapmos.minkunet import CustomMinkUNet14

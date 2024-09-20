@@ -35,6 +35,7 @@ from typing import Optional
 
 import typer
 from kiss_icp.tools.cmd import guess_dataloader
+
 from mapmos.datasets import (
     available_dataloaders,
     jumpable_dataloaders,

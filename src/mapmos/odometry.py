@@ -20,14 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import numpy as np
-from mapmos.config import DataConfig, OdometryConfig
 from typing import Type
 
+import numpy as np
 from kiss_icp.config import KISSConfig
 from kiss_icp.kiss_icp import KissICP, get_registration
-from mapmos.registration import get_registration
+
+from mapmos.config import DataConfig, OdometryConfig
 from mapmos.mapping import VoxelHashMap
+from mapmos.registration import get_registration
 
 
 def parse_config(config_data: DataConfig, config_odometry: OdometryConfig):
