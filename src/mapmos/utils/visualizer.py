@@ -211,7 +211,7 @@ class MapMOSVisualizer(StubVisualizer):
         if self._last_belief_map is None:
             return
         voxels, belief = self._last_belief_map.voxels_with_belief()
-        
+
         belief_nodes = np.zeros((voxels.shape[0] * 8, 3), dtype=np.float64)
         belief_colors = np.zeros((voxels.shape[0] * 8, 3), dtype=np.float64)
         belief_edges = np.zeros((voxels.shape[0] * 12, 2), dtype=np.int64)
@@ -318,7 +318,7 @@ class MapMOSVisualizer(StubVisualizer):
                 if self._toggle_belief:
                     self._ps.get_curve_network("belief").set_transform(np.eye(4))
             else:
-                inv_pose=np.linalg.inv(self._last_pose)
+                inv_pose = np.linalg.inv(self._last_pose)
                 self._ps.get_point_cloud("scan").set_transform(inv_pose)
                 self._ps.get_point_cloud("map").set_transform(inv_pose)
                 if self._toggle_belief:
