@@ -61,10 +61,7 @@ class Odometry(KissICP):
 
     def register_points(self, points, timestamps, scan_index):
         # Apply motion compensation
-        points = self.compensator.deskew_scan(points, timestamps, self.last_delta)
-
-        # Preprocess the input cloud
-        points_prep = self.preprocess(points)
+        points_prep = self.preprocessor.preprocess(points, timestamps, self.last_delta)
 
         # Voxelize
         source, points_downsample = self.voxelize(points_prep)
