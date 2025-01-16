@@ -60,10 +60,10 @@ class Odometry(KissICP):
 
     def register_points(self, points, timestamps, scan_index):
         # Apply motion compensation
-        points = self.preprocessor.preprocess(points, timestamps, self.last_delta)
+        points_prep = self.preprocessor.preprocess(points, timestamps, self.last_delta)
 
         # Voxelize
-        source, points_downsample = self.voxelize(points)
+        source, points_downsample = self.voxelize(points_prep)
 
         # Get motion prediction and adaptive_threshold
         sigma = self.adaptive_threshold.get_threshold()
@@ -79,6 +79,8 @@ class Odometry(KissICP):
             kernel=sigma / 3,
         )
 
+        point_deskewed = self.deskew(points, timestamps, self.last_delta)
+
         # Compute the difference between the prediction and the actual estimate
         model_deviation = np.linalg.inv(initial_guess) @ new_pose
 
@@ -88,6 +90,8 @@ class Odometry(KissICP):
         self.last_delta = np.linalg.inv(self.last_pose) @ new_pose
         self.last_pose = new_pose
 
+        return self.transform(point_deskewed, self.last_pose)
+
     def get_map_points(self):
         map_points, map_timestamps = self.local_map.point_cloud_with_timestamps()
         return map_points.reshape(-1, 3), map_timestamps.reshape(-1, 1)
@@ -95,12 +99,17 @@ class Odometry(KissICP):
     def current_location(self):
         return self.last_pose[:3, 3]
 
+    def transform(self, points, pose):
+        points_hom = np.hstack((points, np.ones((len(points), 1))))
+        points = (pose @ points_hom.T).T[:, :3]
+        return points
+
     def deskew(self, points, timestamps, relative_motion):
         return (
             np.asarray(
                 mapmos_pybind._deskew(
                     frame=mapmos_pybind._Vector3dVector(points),
-                    timestamps=timestamps.ravel(),
+                    timestamps=timestamps,
                     relative_motion=relative_motion,
                 )
             )

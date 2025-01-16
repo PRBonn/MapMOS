@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import copy
 import os
 import time
 from collections import deque
@@ -121,11 +120,6 @@ class MapMOSPipeline(OdometryPipeline):
         mask = np.logical_and(mask, ranges >= min_range)
         return mask
 
-    def _transform(self, points, pose):
-        points_hom = np.hstack((points, np.ones((len(points), 1))))
-        points = (pose @ points_hom.T).T[:, :3]
-        return points
-
     # Private interface  ------
     def _run_pipeline(self):
         pbar = trange(self._first, self._last, unit=" frames", dynamic_ncols=True)
@@ -133,12 +127,8 @@ class MapMOSPipeline(OdometryPipeline):
             local_scan, timestamps, gt_labels = self._next(scan_index)
             map_points, map_indices = self.odometry.get_map_points()
 
-            last_delta = copy.copy(self.odometry.last_delta)
-            self.odometry.register_points(local_scan, timestamps, scan_index)
+            scan_points = self.odometry.register_points(local_scan, timestamps, scan_index)
             self.poses[scan_index - self._first] = self.odometry.last_pose
-
-            scan_points = self.odometry.deskew(local_scan, timestamps, last_delta)
-            scan_points = self._transform(scan_points, self.odometry.last_pose)
 
             min_range_mos = self.config.mos.min_range_mos
             max_range_mos = self.config.mos.max_range_mos
