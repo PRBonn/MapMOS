@@ -97,10 +97,12 @@ class Odometry(KissICP):
 
     def deskew(self, points, timestamps, relative_motion):
         return (
-            mapmos_pybind._deskew(
-                frame=mapmos_pybind._Vector3dVector(points),
-                timestamps=timestamps.ravel(),
-                relative_motion=relative_motion,
+            np.asarray(
+                mapmos_pybind._deskew(
+                    frame=mapmos_pybind._Vector3dVector(points),
+                    timestamps=timestamps.ravel(),
+                    relative_motion=relative_motion,
+                )
             )
             if self.config.data.deskew
             else points

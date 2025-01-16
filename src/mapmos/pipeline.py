@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import copy
 import os
 import time
 from collections import deque
@@ -131,10 +132,12 @@ class MapMOSPipeline(OdometryPipeline):
         for scan_index in pbar:
             local_scan, timestamps, gt_labels = self._next(scan_index)
             map_points, map_indices = self.odometry.get_map_points()
+
+            last_delta = copy.copy(self.odometry.last_delta)
             self.odometry.register_points(local_scan, timestamps, scan_index)
             self.poses[scan_index - self._first] = self.odometry.last_pose
 
-            scan_points = self.odometry.deskew(local_scan, timestamps, self.odometry.last_delta)
+            scan_points = self.odometry.deskew(local_scan, timestamps, last_delta)
             scan_points = self._transform(scan_points, self.odometry.last_pose)
 
             min_range_mos = self.config.mos.min_range_mos
