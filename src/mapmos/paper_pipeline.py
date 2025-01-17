@@ -72,6 +72,7 @@ class PaperPipeline(MapMOSPipeline):
         for scan_index in pbar:
             local_scan, timestamps, gt_labels = self._next(scan_index)
             map_points, map_indices = self.odometry.get_map_points()
+
             scan_points = self.odometry.register_points(local_scan, timestamps, scan_index)
             self.poses[scan_index - self._first] = self.odometry.last_pose
 

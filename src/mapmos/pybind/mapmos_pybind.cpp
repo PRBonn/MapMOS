@@ -30,6 +30,7 @@
 #include <memory>
 #include <vector>
 
+#include "Deskew.hpp"
 #include "Registration.hpp"
 #include "VoxelHashMap.hpp"
 #include "stl_vector_eigen.h"
@@ -44,6 +45,15 @@ PYBIND11_MODULE(mapmos_pybind, m) {
     auto vector3dvector = pybind_eigen_vector_of_vector<Eigen::Vector3d>(
         m, "_Vector3dVector", "std::vector<Eigen::Vector3d>",
         py::py_array_to_vectors_double<Eigen::Vector3d>);
+
+    m.def(
+        "_deskew",
+        [](const std::vector<Eigen::Vector3d> &points, const std::vector<double> &timestamps,
+           const Eigen::Matrix4d &relative_motion) {
+            Sophus::SE3d motion(relative_motion);
+            return Deskew(points, timestamps, motion);
+        },
+        "frame"_a, "timestamps"_a, "relative_motion"_a);
 
     // Map representation
     py::class_<VoxelHashMap> internal_map(m, "_VoxelHashMap", "Don't use this");

@@ -20,14 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Type
-
 import numpy as np
 from kiss_icp.config import KISSConfig
 from kiss_icp.kiss_icp import KissICP, get_registration
 
 from mapmos.config import DataConfig, OdometryConfig
 from mapmos.mapping import VoxelHashMap
+from mapmos.pybind import mapmos_pybind
 from mapmos.registration import get_registration
 
 
@@ -61,10 +60,7 @@ class Odometry(KissICP):
 
     def register_points(self, points, timestamps, scan_index):
         # Apply motion compensation
-        points = self.compensator.deskew_scan(points, timestamps, self.last_delta)
-
-        # Preprocess the input cloud
-        points_prep = self.preprocess(points)
+        points_prep = self.preprocessor.preprocess(points, timestamps, self.last_delta)
 
         # Voxelize
         source, points_downsample = self.voxelize(points_prep)
@@ -83,6 +79,8 @@ class Odometry(KissICP):
             kernel=sigma / 3,
         )
 
+        point_deskewed = self.deskew(points, timestamps, self.last_delta)
+
         # Compute the difference between the prediction and the actual estimate
         model_deviation = np.linalg.inv(initial_guess) @ new_pose
 
@@ -92,17 +90,29 @@ class Odometry(KissICP):
         self.last_delta = np.linalg.inv(self.last_pose) @ new_pose
         self.last_pose = new_pose
 
-        points_reg = self.transform(points, self.last_pose)
-        return np.asarray(points_reg)
+        return self.transform(point_deskewed, self.last_pose)
 
     def get_map_points(self):
         map_points, map_timestamps = self.local_map.point_cloud_with_timestamps()
         return map_points.reshape(-1, 3), map_timestamps.reshape(-1, 1)
+
+    def current_location(self):
+        return self.last_pose[:3, 3]
 
     def transform(self, points, pose):
         points_hom = np.hstack((points, np.ones((len(points), 1))))
         points = (pose @ points_hom.T).T[:, :3]
         return points
 
-    def current_location(self):
-        return self.last_pose[:3, 3]
+    def deskew(self, points, timestamps, relative_motion):
+        return (
+            np.asarray(
+                mapmos_pybind._deskew(
+                    frame=mapmos_pybind._Vector3dVector(points),
+                    timestamps=timestamps,
+                    relative_motion=relative_motion,
+                )
+            )
+            if self.config.data.deskew
+            else points
+        )

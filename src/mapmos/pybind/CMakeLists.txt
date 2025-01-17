@@ -41,7 +41,7 @@ find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
 # Python bindings
-pybind11_add_module(mapmos_pybind MODULE mapmos_pybind.cpp VoxelHashMap.cpp Registration.cpp)
+pybind11_add_module(mapmos_pybind MODULE mapmos_pybind.cpp VoxelHashMap.cpp Registration.cpp Deskew.cpp)
 target_compile_features(mapmos_pybind PRIVATE cxx_std_17)
 target_link_libraries(mapmos_pybind PUBLIC Eigen3::Eigen tsl::robin_map TBB::tbb Sophus::Sophus)
 install(TARGETS mapmos_pybind LIBRARY DESTINATION .)

@@ -59,7 +59,7 @@ class VoxelHashMap:
         self._internal_map._remove_far_away_points(location)
 
     def update_belief(self, points: np.ndarray, logits: np.ndarray):
-        self._internal_map._update_belief(mapmos_pybind._Vector3dVector(points), logits)
+        self._internal_map._update_belief(mapmos_pybind._Vector3dVector(points), logits.ravel())
 
     def get_belief(self, points: np.ndarray):
         belief = self._internal_map._get_belief(mapmos_pybind._Vector3dVector(points))
