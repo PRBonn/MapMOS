@@ -23,11 +23,7 @@
 #include "Deskew.hpp"
 
 #include <tbb/blocked_range.h>
-#include <tbb/concurrent_vector.h>
-#include <tbb/global_control.h>
-#include <tbb/info.h>
 #include <tbb/parallel_for.h>
-#include <tbb/task_arena.h>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -40,9 +36,6 @@ namespace mapmos {
 std::vector<Eigen::Vector3d> Deskew(const std::vector<Eigen::Vector3d> &frame,
                                     const std::vector<double> &timestamps,
                                     const Sophus::SE3d &relative_motion) {
-    static const auto tbb_control_settings = tbb::global_control(
-        tbb::global_control::max_allowed_parallelism, tbb::this_task_arena::max_concurrency());
-
     const std::vector<Eigen::Vector3d> &deskewed_frame = [&]() {
         const auto &omega = relative_motion.log();
         const Sophus::SE3d &inverse_motion = relative_motion.inverse();
