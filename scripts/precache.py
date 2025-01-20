@@ -67,7 +67,7 @@ def precache(
     from mapmos.datasets.mapmos_dataset import MapMOSDataset, collate_fn
 
     cfg = load_config(config)
-    sequences = list(sequence) if sequence != None  else cfg.training.train + cfg.training.val
+    sequences = list(sequence) if sequence != None else cfg.training.train + cfg.training.val
 
     data_iterable = DataLoader(
         MapMOSDataset(
