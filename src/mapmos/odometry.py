@@ -109,7 +109,7 @@ class Odometry(KissICP):
             np.asarray(
                 mapmos_pybind._deskew(
                     frame=mapmos_pybind._Vector3dVector(points),
-                    timestamps=timestamps,
+                    timestamps=timestamps.ravel(),
                     relative_motion=relative_motion,
                 )
             )
