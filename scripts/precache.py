@@ -25,7 +25,6 @@ from pathlib import Path
 from typing import List, Optional
 
 import typer
-from click import Option
 from tqdm import tqdm
 
 from mapmos.config import load_config
