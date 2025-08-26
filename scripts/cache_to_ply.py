@@ -52,7 +52,7 @@ def cache_to_ply(
         help="The directory where the cache should be created",
         show_default=False,
     ),
-    sequence: Optional[str] = typer.Option(
+    sequence: Optional[List[str]] = typer.Option(
         None,
         "--sequence",
         "-s",
@@ -76,13 +76,14 @@ def cache_to_ply(
 
     # Run
     cfg = load_config(config)
+    sequences = sequence if sequence != None else cfg.training.train + cfg.training.val
 
     data_iterable = DataLoader(
         MapMOSDataset(
             dataloader=dataloader,
             data_dir=data,
             config=cfg,
-            sequences=[sequence],
+            sequences=sequences,
             cache_dir=cache_dir,
         ),
         batch_size=1,
